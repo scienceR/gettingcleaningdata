@@ -55,4 +55,4 @@ measurement: the body linear acceleration and angular velocity were derived in t
 
 .X/Y/Z: one direction of a 3-axial signal
 .mean: global mean value
-
+The data set is written to the file 'tidy_data.txt'.
