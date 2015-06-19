@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# gettingcleaningdata
-Coursera project for Getting and Cleaning Data course
-=======
-Getting-and-Cleaning-Data
 Getting and Cleaning Data Course Project (Coursera)
 
 Description
@@ -36,4 +31,3 @@ download compressed raw data
 unzip raw data and copy the directory 'UCI HAR Dataset' to the cloned repository root directory
 open a R console and set the working directory to the repository root
 run run_analysis.R script
->>>>>>> initial commit
