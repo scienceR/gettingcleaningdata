@@ -1,67 +1,39 @@
-require(plyr)
+library(dplyr)
 
-#Utils: function add suffix
-addSuffix<- function(x, suffix) {
-  if (!(x %in% c("Subject","Activity"))) {
-    paste(x,suffix, sep="")
-  }
-  else{
-    x
-  }
-}
+train <- read.table("./data/X_train.txt")
+test <- read.table("./data/X_test.txt")
 
-#Get data
-pathfile<-file.path(getwd(),"UCI HAR Dataset")
+subjectTrain <- as.vector(read.table("./data/subject_train.txt"))
+subjectTest <- as.vector(read.table("./data/subject_test.txt"))
+trainingLabels <- as.vector(read.table("./data/y_train.txt"))
+testLabels <- as.vector(read.table("./data/y_test.txt"))
+features <- as.vector(read.table("./data/features.txt"))
+activityLabels <- as.vector(read.table("./data/activity_labels.txt"))
+names(activityLabels) <- c("ActivityID", "Activity")
 
-pathfiletest<-file.path(pathfile, "test")
-pathfiletrain<-file.path(pathfile, "train")
-  
-xtest<-read.table(file.path(pathfiletest,"X_test.txt"))
-ytest<-read.table(file.path(pathfiletest,"Y_test.txt"))
-subjecttest<-read.table(file.path(pathfiletest,"subject_test.txt"))
+names(train) <- features$V2
+names(test) <- features$V2
 
-xtrain<-read.table(file.path(pathfiletrain,"X_train.txt"))
-ytrain<-read.table(file.path(pathfiletrain,"Y_train.txt"))
-subjecttrain<-read.table(file.path(pathfiletrain,"subject_train.txt"))
+train[, "Subject"] <- subjectTrain
+train[, "ActivityID"] <- trainingLabels
+test[, "Subject"] <- subjectTest
+test[, "ActivityID"] <- testLabels
 
-#Get activity labels 
-activitylabels<-read.table(file.path(pathfile,
-                              			"activity_labels.txt"),
-                            col.names = c("Id", "Activity")
-                            )
+train <- merge(train, activityLabels, by = "ActivityID", all = TRUE)
+test <- merge(test, activityLabels, by = "ActivityID", all = TRUE)
 
-#Get features labels
-featurelabels<-read.table(file.path(pathfile,
-                            		"features.txt"),
-                            colClasses = c("character")
-                           	)
+mergedSet <- merge(train, test, all = TRUE)
+resultSet <- select(mergedSet, matches('std|mean|Activity|Subject'))
 
-#1.Merges the training and the test sets to create one data set.
-traindata<-cbind(cbind(xtrain, subjecttrain), ytrain)
-testdata<-cbind(cbind(xtest, subjecttest), ytest)
-sensordata<-rbind(traindata, testdata)
+resultSet <- tbl_df(resultSet[, c(88, 89, 1:86)])
 
-sensorlabels<-rbind(rbind(featurelabels, c(562, "Subject")), c(563, "Id"))[,2]
-names(sensordata)<-sensorlabels
+finalSet <- resultSet %>%
+                group_by(Subject, Activity) %>%
+                summarise_each(funs(mean)) %>%
+                select(Subject, Activity, matches('std|mean'))
 
-#2. Extracts only the measurements on the mean and standard deviation for each measurement.
-sensordatameanstd <- sensordata[,grepl("mean\\(\\)|std\\(\\)|Subject|Id", names(sensordata))]
+write.table(finalSet, "./data/tidy_data.txt", row.name = FALSE)
 
-#3. Uses descriptive activity names to name the activities in the data set
-sensordatameanstd <- join(sensordatameanstd, activitylabels, by = "Id", match = "first")
-sensordatameanstd <- sensordatameanstd[,-1]
 
-#4. Appropriately labels the data set with descriptive names.
-names(sensordatameanstd) <- gsub("([()])","",names(sensordatameanstd))
-#norm names
-names(sensordatameanstd) <- make.names(names(sensordatameanstd))
 
-#5. From the data set in step 4, creates a second, independent tidy data set 
-# with the average of each variable for each activity and each subject 
-finaldata<-ddply(sensordatameanstd, c("Subject","Activity"), numcolwise(mean))
-#improve column names
-finaldataheaders<-names(finaldata)
-finaldataheaders<-sapply(finaldataheaders, addSuffix, ".mean")
-names(finaldata)<-finaldataheaders
 
-write.table(finaldata, file = "sensordata_avg_by_subject.txt", row.name=FALSE)
