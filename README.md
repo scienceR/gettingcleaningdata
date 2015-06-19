@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Getting-and-Cleaning-Data
 =========================
 
@@ -37,11 +36,11 @@ How to
 
 * clone this repository
 * download compressed raw data
-* unzip raw data and copy the directory 'UCI HAR Dataset' to the cloned repository root directory
+* unzip raw data and copy the all the text files from directory 'UCI HAR Dataset' to the cloned repository root directory
 * open a R console and set the working directory to the repository root
 * run run_analysis.R script 
 
-In the repository root directory you find the file 'sensordata_avg_by_subject.txt' 
+In the repository root directory you find the file 'tidy_data.txt' 
 =======
 Getting and Cleaning Data Course Project (Coursera)
 
@@ -73,7 +72,8 @@ How to
 
 clone this repository
 download compressed raw data
-unzip raw data and copy the directory 'UCI HAR Dataset' to the cloned repository root directory
+unzip raw data and copy all the text files under the directory 'UCI HAR Dataset' to the cloned repository root directory
 open a R console and set the working directory to the repository root
 run run_analysis.R script
->>>>>>> 8b4a2f9a3379217ef8f728af80b6ee8412057201
+
+

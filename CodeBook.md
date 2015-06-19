@@ -1,5 +1,4 @@
 Code Book
-<<<<<<< HEAD
 ========
 
 This is a code book that describes the variables, data, and any transformations or work that you performed to clean up the data.
@@ -129,4 +128,5 @@ measurement: the body linear acceleration and angular velocity were derived in t
 .X/Y/Z: one direction of a 3-axial signal
 .mean: global mean value
 The data set is written to the file 'tidy_data.txt'.
->>>>>>> 8b4a2f9a3379217ef8f728af80b6ee8412057201
+
+
